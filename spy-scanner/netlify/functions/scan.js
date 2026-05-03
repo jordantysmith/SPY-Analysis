@@ -41,7 +41,7 @@ Trade rules: $1000 size, medium-high risk. BULLISH=CALL target +75% stop -45%. B
 
     for (let turn = 0; turn < 8; turn++) {
       const response = await client.messages.create({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 2000,
         tools: [{ type: "web_search_20250305", name: "web_search" }],
         messages,
