@@ -1,11 +1,11 @@
-const Anthropic = require("@anthropic-ai/sdk");
+import Anthropic from "@anthropic-ai/sdk";
 
-exports.handler = async function (event, context) {
+export const handler = async function (event, context) {
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
   }
 
-  const client = new Anthropic.default({
+  const client = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
   });
 
