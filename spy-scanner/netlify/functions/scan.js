@@ -1,3 +1,7 @@
+exports.config = {
+  timeout: 60
+};
+
 const HEADERS = {
   "Content-Type": "application/json",
   "Access-Control-Allow-Origin": "*",
@@ -40,7 +44,7 @@ Trade rules: $1000 size, medium-high risk. BULLISH=CALL target +75% stop -45%. B
     let messages = [{ role: "user", content: prompt }];
     let current = null;
 
-    for (let turn = 0; turn < 8; turn++) {
+    for (let turn = 0; turn < 4; turn++) {
       const res = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
         headers: {
