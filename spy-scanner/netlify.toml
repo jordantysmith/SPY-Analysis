@@ -5,7 +5,3 @@
 
 [functions]
   directory = "netlify/functions"
-  node_bundler = "esbuild"
-
-[functions."scan"]
-  timeout = 60
