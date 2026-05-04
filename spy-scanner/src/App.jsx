@@ -94,6 +94,7 @@ export default function App() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({}),
       });
+      if (!r1.ok) throw new Error(`Function returned ${r1.status} — run via netlify dev locally or check Netlify logs`);
       const parsed = await r1.json();
       if (parsed.error) throw new Error(parsed.error);
       applyResults(parsed);
