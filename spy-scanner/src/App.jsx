@@ -85,47 +85,34 @@ export default function App() {
   };
 
   const runScan = async () => {
-    setBusy(true); setMsgC("#f5a623");
-    setMsg("Scanning markets…");
-
-const runScan = async () => {
-  setBusy(true);
-  setScanColor("#f5a623");
-  const stepMsgs = ["Fetching S&P futures…","Checking SPY pre-market…","Reading VIX…","Scanning economic calendar…","Checking Fed schedule…","Reviewing earnings…","Scanning headlines…","Assessing technicals…","Building trade plan…"];
-  let si = 0;
-  const stTimer = setInterval(() => { setMsg(stepMsgs[si % stepMsgs.length]); si++; }, 2500);
-
-  try {
-    const res = await fetch("/.netlify/functions/scan", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
-
-    const text = await res.text();
-
-    if (!res.ok) {
-      throw new Error(`Function returned ${res.status}: ${text.substring(0, 300)}`);
+    setBusy(true);
+    setMsgC("#f5a623");
+    const stepMsgs = ["Fetching S&P futures…","Checking SPY pre-market…","Reading VIX…","Scanning economic calendar…","Checking Fed schedule…","Reviewing earnings…","Scanning headlines…","Assessing technicals…","Building trade plan…"];
+    let si = 0;
+    const stTimer = setInterval(() => { setMsg(stepMsgs[si % stepMsgs.length]); si++; }, 2500);
+    try {
+      const res = await fetch("/.netlify/functions/scan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      const text = await res.text();
+      if (!res.ok) throw new Error(`Function returned ${res.status}: ${text.substring(0, 300)}`);
+      const parsed = JSON.parse(text);
+      if (parsed.error) throw new Error(parsed.error);
+      applyResults(parsed);
+      const t = new Date().toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit" });
+      setMsg("Scan complete — " + t + " ET");
+      setMsgC("#05d97c");
+    } catch (err) {
+      setMsg("Error: " + err.message);
+      setMsgC("#f03e3e");
+      console.error("Scan error:", err);
+    } finally {
+      clearInterval(stTimer);
+      setBusy(false);
     }
-
-    const parsed = JSON.parse(text);
-    if (parsed.error) throw new Error(parsed.error);
-
-    applyResults(parsed);
-
-    const t = new Date().toLocaleTimeString("en-US", { timeZone: "America/New_York", hour: "2-digit", minute: "2-digit" });
-    setMsg("Scan complete — " + t + " ET");
-    setScanColor("#05d97c");
-
-  } catch (err) {
-    setMsg("Error: " + err.message);
-    setScanColor("#f03e3e");
-    console.error("Scan error:", err);
-  } finally {
-    clearInterval(stTimer);
-    setBusy(false);
-  }
-};
+  };
 
   const reset = () => {
     setSt(initSt()); setTickers({es:null,spy:null,vix:null}); setTrade(null); setNotes("");
